@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "903877753689",
+    "project_id": "red-drop-1e949",
+    "storage_bucket": "red-drop-1e949.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903877753689:android:482fdccb2434d4d605ea48",
+        "android_client_info": {
+          "package_name": "uk.ac.tees.mad.rd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKJ45Sw3TuDQN7qVWyQBd31Dk5Okee_ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
