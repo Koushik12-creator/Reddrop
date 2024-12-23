@@ -43,9 +43,10 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import uk.ac.tees.mad.rd.R
+import uk.ac.tees.mad.rd.authentication.model.HealthDetails
+import uk.ac.tees.mad.rd.authentication.model.UserInfo
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
 import uk.ac.tees.mad.rd.ui.theme.poppinsFamily
-
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -72,7 +73,10 @@ fun EditProfileScreen(
     var updatedPhoneNumber by remember { mutableStateOf(currentUser?.phoneNumber?:"")}
     var updatedBloodGroup by remember { mutableStateOf(currentUser?.bloodGroup?:"") }
     var showBloodGroup by remember { mutableStateOf(false) }
-
+    var anyHealthHistory by remember { mutableStateOf(currentUser?.healthDetails?.anyHistory?: false) }
+    var anyHeartDisease by remember { mutableStateOf(currentUser?.healthDetails?.heartDisease?: false) }
+    var diabeticHistory by remember { mutableStateOf(currentUser?.healthDetails?.diabetes?: false) }
+    var updatedProfilePictureUrl by remember { mutableStateOf(currentUser?.profilePicture?: "") }
 
 
     Column(
@@ -324,6 +328,20 @@ fun EditProfileScreen(
         Button(
             onClick = {
 
+                val healthDetails = HealthDetails(
+                    anyHistory = anyHealthHistory,
+                    diabetes = diabeticHistory,
+                    heartDisease = anyHeartDisease
+                )
+                val userInfo = UserInfo(
+                    name = updatedName,
+                    email = currentUser?.email?:"",
+                    phoneNumber = updatedPhoneNumber,
+                    bloodGroup = updatedBloodGroup,
+                    profilePicture = updatedProfilePictureUrl,
+                    healthDetails = healthDetails
+                )
+                authViewmodel.updateUserInformation(userInfo = userInfo)
             }
         ) {
             Text(
