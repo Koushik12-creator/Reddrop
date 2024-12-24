@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,25 +71,27 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Text(
-                text = "This is Home Screen",
-                fontSize = 30.sp
-            )
-            Button(
-                onClick = {
-                    authViewmodel.logout()
-                    navController.navigate("auth_graph"){
-                        popUpTo(navController.graph.startDestinationId){
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ){
+                items(20){
+                    BloodRequestDetails()
                 }
-            ) {
-                Text(
-                    text = "Logout"
-                )
             }
         }
+    }
+}
+
+
+@Composable
+fun BloodRequestDetails(){
+    Card {
+        Text(
+            text = "Requested Name",
+            fontSize = 17.sp,
+            fontFamily = poppinsFamily
+        )
+
     }
 }

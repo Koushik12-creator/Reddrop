@@ -342,6 +342,7 @@ fun EditProfileScreen(
                     healthDetails = healthDetails
                 )
                 authViewmodel.updateUserInformation(userInfo = userInfo)
+                navController.popBackStack()
             }
         ) {
             Text(

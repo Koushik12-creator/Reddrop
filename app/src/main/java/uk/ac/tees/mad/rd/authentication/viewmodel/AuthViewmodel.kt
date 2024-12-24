@@ -136,11 +136,11 @@ class AuthViewmodel @Inject constructor(
                     phoneNumber = userInfo.phoneNumber,
                     profilePicture = userInfo.profilePicture,
                     healthDetails = userInfo.healthDetails
-                ) as Map<String, UserInfo>
+                )
 
                 firestore.collection("users")
                     .document(userId)
-                    .update(updatedUser)
+                    .set(updatedUser)
                     .addOnSuccessListener {
                         fetchCurrentUser()
                         Log.i("The User update: ", "User updated successfully!")
