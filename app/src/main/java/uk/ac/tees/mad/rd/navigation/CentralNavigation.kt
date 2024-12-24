@@ -6,9 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
+import uk.ac.tees.mad.rd.mainapp.viewmodel.MainViewModel
 import uk.ac.tees.mad.rd.ui.authentication.LogInScreen
 import uk.ac.tees.mad.rd.ui.authentication.SignUpScreen
 import uk.ac.tees.mad.rd.ui.authentication.SplashScreen
+import uk.ac.tees.mad.rd.ui.mainapp.DonationCenterScreen
 import uk.ac.tees.mad.rd.ui.mainapp.EditProfileScreen
 import uk.ac.tees.mad.rd.ui.mainapp.HomeScreen
 import uk.ac.tees.mad.rd.ui.mainapp.ProfileScreen
@@ -18,7 +20,8 @@ import uk.ac.tees.mad.rd.ui.mainapp.RequestBloodScreen
 @Composable
 fun CentralNavigation(
     navController: NavHostController,
-    authViewmodel: AuthViewmodel
+    authViewmodel: AuthViewmodel,
+    mainViewModel: MainViewModel
 ){
     NavHost(
         navController = navController,
@@ -63,6 +66,7 @@ fun CentralNavigation(
             composable("home_screen"){
                 HomeScreen(
                     authViewmodel,
+                    mainViewModel,
                     navController
                 )
             }
@@ -82,7 +86,14 @@ fun CentralNavigation(
             }
 
             composable("request_blood_screen") {
-                RequestBloodScreen()
+                RequestBloodScreen(
+                    navController,
+                    mainViewModel
+                )
+            }
+
+            composable("donation_center_screen") {
+                DonationCenterScreen()
             }
 
         }

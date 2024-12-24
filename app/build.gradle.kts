@@ -91,7 +91,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Google Fonts
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.3")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.5")
 
     //Material extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.5")
@@ -99,5 +99,8 @@ dependencies {
 
     //Glide Implementation
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+    //Google Maps API
+    implementation("com.google.maps.android:maps-compose:4.3.3")
 
 }

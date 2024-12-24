@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
+import uk.ac.tees.mad.rd.mainapp.viewmodel.MainViewModel
 import uk.ac.tees.mad.rd.navigation.CentralNavigation
 import uk.ac.tees.mad.rd.ui.theme.RedDropTheme
 
@@ -23,6 +24,7 @@ import uk.ac.tees.mad.rd.ui.theme.RedDropTheme
 class MainActivity : ComponentActivity() {
 
     private val authViewmodel by viewModels<AuthViewmodel>()
+    private val mainViewmodel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,8 @@ class MainActivity : ComponentActivity() {
             RedDropTheme {
                 CentralNavigation(
                     navController = navController,
-                    authViewmodel = authViewmodel
+                    authViewmodel = authViewmodel,
+                    mainViewModel = mainViewmodel
                 )
             }
         }

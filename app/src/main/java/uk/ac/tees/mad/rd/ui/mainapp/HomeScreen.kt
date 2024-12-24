@@ -26,6 +26,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
+import uk.ac.tees.mad.rd.mainapp.viewmodel.MainViewModel
 import uk.ac.tees.mad.rd.ui.theme.iconFamily
 import uk.ac.tees.mad.rd.ui.theme.metamorphousFamily
 import uk.ac.tees.mad.rd.ui.theme.poppinsFamily
@@ -42,8 +45,13 @@ import uk.ac.tees.mad.rd.ui.theme.poppinsFamily
 @Composable
 fun HomeScreen(
     authViewmodel: AuthViewmodel,
+    mainViewModel: MainViewModel,
     navController: NavHostController
 ){
+
+    val allRequest by mainViewModel.allRequests.collectAsState()
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,6 +103,21 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .padding(vertical = 5.dp),
+                onClick = {
+                    navController.navigate("donation_center_screen")
+                }
+            ) {
+                Text(
+                    text = "See the nearest donation Centers!!",
+                    fontSize = 17.sp,
+                    fontFamily = poppinsFamily
+                )
+            }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
