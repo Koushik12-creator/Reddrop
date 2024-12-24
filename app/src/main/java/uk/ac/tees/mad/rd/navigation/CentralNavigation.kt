@@ -12,6 +12,7 @@ import uk.ac.tees.mad.rd.ui.authentication.SplashScreen
 import uk.ac.tees.mad.rd.ui.mainapp.EditProfileScreen
 import uk.ac.tees.mad.rd.ui.mainapp.HomeScreen
 import uk.ac.tees.mad.rd.ui.mainapp.ProfileScreen
+import uk.ac.tees.mad.rd.ui.mainapp.RequestBloodScreen
 
 
 @Composable
@@ -78,6 +79,10 @@ fun CentralNavigation(
                     navController,
                     authViewmodel
                 )
+            }
+
+            composable("request_blood_screen") {
+                RequestBloodScreen()
             }
 
         }
