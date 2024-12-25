@@ -1,5 +1,13 @@
 package uk.ac.tees.mad.rd.ui.mainapp
 
+import android.Manifest
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -35,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,6 +59,9 @@ import uk.ac.tees.mad.rd.authentication.model.HealthDetails
 import uk.ac.tees.mad.rd.authentication.model.UserInfo
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
 import uk.ac.tees.mad.rd.ui.theme.poppinsFamily
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -56,6 +69,8 @@ fun EditProfileScreen(
     navController: NavHostController,
     authViewmodel: AuthViewmodel
 ){
+
+    val context = LocalContext.current
 
     val bloodGroups = listOf(
         "A Positive(A+)",
@@ -79,6 +94,72 @@ fun EditProfileScreen(
     var anyHeartDisease by remember { mutableStateOf(currentUser?.healthDetails?.heartDisease?: false) }
     var diabeticHistory by remember { mutableStateOf(currentUser?.healthDetails?.diabetes?: false) }
     var updatedProfilePictureUrl by remember { mutableStateOf(currentUser?.profilePicture?: "") }
+    var showDialog by remember { mutableStateOf(false) }
+
+
+    //Launching Gallery to select the picture
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {uri: Uri? ->
+        uri?.let {
+
+        }
+    }
+
+    // Launcher for taking a picture with the camera
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        bitmap?.let {
+
+        }
+    }
+
+    //Launcher for asking permission to access the camera.
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {isGranted->
+            if (isGranted){
+                cameraLauncher.launch(null)
+            }else{
+                Toast.makeText(context, "Camera Permission Denied", Toast.LENGTH_LONG).show()
+            }
+        }
+    )
+
+    //Launcher for asking permission to access the gallery.
+    val galleryPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {isGranted->
+            if (isGranted){
+                galleryLauncher.launch("images/*")
+            }else{
+                Toast.makeText(context, "Gallery Permission Denied", Toast.LENGTH_LONG).show()
+            }
+        }
+    )
+
+
+
+    if (showDialog){
+        ImageSelectionSource(
+            onDismiss = { showDialog = false },
+            onCameraClick = {
+                cameraPermissionLauncher.launch(
+                    Manifest.permission.CAMERA
+                )
+            },
+            onGalleryClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    galleryLauncher.launch("image/*")
+                } else {
+                    galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                }
+            }
+        )
+    }
 
 
     Column(
@@ -116,7 +197,7 @@ fun EditProfileScreen(
                 containerColor = Color.Transparent
             ),
             onClick = {
-
+                showDialog = true
             }
         ) {
             Text(
@@ -256,9 +337,9 @@ fun EditProfileScreen(
                         fontFamily = poppinsFamily
                     )
                     RadioButton(
-                        selected = false,
+                        selected = (option == "Yes" && anyHealthHistory) || (option == "No" && !anyHealthHistory),
                         onClick = {
-
+                            anyHealthHistory = option == "Yes"
                         }
                     )
                 }
@@ -287,9 +368,9 @@ fun EditProfileScreen(
                         fontFamily = poppinsFamily
                     )
                     RadioButton(
-                        selected = false,
+                        selected = (option == "Yes" && diabeticHistory) || (option == "No" && !diabeticHistory),
                         onClick = {
-
+                            diabeticHistory = option == "Yes"
                         }
                     )
                 }
@@ -318,9 +399,9 @@ fun EditProfileScreen(
                         fontFamily = poppinsFamily
                     )
                     RadioButton(
-                        selected = false,
+                        selected = (option == "Yes" && anyHeartDisease) || (option == "No" && !anyHeartDisease),
                         onClick = {
-
+                            anyHeartDisease = option == "Yes"
                         }
                     )
                 }
@@ -359,3 +440,66 @@ fun EditProfileScreen(
 
     }
 }
+
+
+@Composable
+fun ImageSelectionSource(
+    onDismiss: ()->Unit,
+    onCameraClick: ()->Unit,
+    onGalleryClick: ()->Unit
+){
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Choose Image Source")
+        },
+        text = {
+            Column {
+                Button(
+                    onClick = {
+                        onCameraClick()
+                        onDismiss()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Take a Photo",
+                        fontSize = 13.sp,
+                        fontFamily = poppinsFamily
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        onGalleryClick()
+                        onDismiss()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Choose from Gallery",
+                        fontFamily = poppinsFamily,
+                        fontSize = 13.sp
+                    )
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {}
+    )
+}
+
+
+
+fun bitmapToUri(context: Context, bt: Bitmap): Uri{
+    val image = File(context.cacheDir, "${UUID.randomUUID()}.jpg")
+    val outStream = FileOutputStream(image)
+    bt.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+    outStream.flush()
+    outStream.close()
+    return Uri.fromFile(image)
+}
+
+

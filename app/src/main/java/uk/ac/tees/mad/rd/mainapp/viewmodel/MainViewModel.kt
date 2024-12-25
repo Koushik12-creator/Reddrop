@@ -47,9 +47,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             firestore.collection("requests")
                 .get()
-                .addOnSuccessListener {
-                    _allRequests.value = it.toObjects(RequestModel::class.java)
-                    Log.i("Getting all Requests", it.toString())
+                .addOnSuccessListener {res->
+                    _allRequests.value = res.mapNotNull { it.toObject(RequestModel::class.java) }
+                    Log.i("Getting all Requests", res.toString())
                 }
                 .addOnSuccessListener {
                     Log.i("Getting all Requests", "The Error ${it}")
