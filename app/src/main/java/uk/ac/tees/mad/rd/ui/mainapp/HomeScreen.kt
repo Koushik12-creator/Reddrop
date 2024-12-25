@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import uk.ac.tees.mad.rd.authentication.viewmodel.AuthViewmodel
+import uk.ac.tees.mad.rd.mainapp.model.RequestModel
 import uk.ac.tees.mad.rd.mainapp.viewmodel.MainViewModel
 import uk.ac.tees.mad.rd.ui.theme.iconFamily
 import uk.ac.tees.mad.rd.ui.theme.metamorphousFamily
@@ -107,7 +109,9 @@ fun HomeScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .padding(vertical = 5.dp),
+                    .padding(top = 15.dp),
+                shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(width = 1.dp, color = Color.Black),
                 onClick = {
                     navController.navigate("donation_center_screen")
                 }
@@ -123,8 +127,8 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(horizontal = 10.dp, vertical = 10.dp)
             ){
-                items(20){
-                    BloodRequestDetails()
+                items(allRequest){request->
+                    BloodRequestDetails(request)
                 }
             }
         }
@@ -133,7 +137,9 @@ fun HomeScreen(
 
 
 @Composable
-fun BloodRequestDetails(){
+fun BloodRequestDetails(
+    request: RequestModel
+){
     Card(
         modifier = Modifier
             .padding(vertical = 10.dp)
