@@ -184,10 +184,11 @@ class AuthViewmodel @Inject constructor(
                             .addOnSuccessListener {
                                 fetchCurrentUser()
                             }
+                        Log.i("The profile picture: ", "The picture is updated successfully.")
                     }
                 }
                 .addOnFailureListener{
-                    Log.i("Error Encountered: ", "Unable to update the profile picture.")
+                    Log.i("Error Encountered: ", "Unable to update the profile picture. ${it}")
                 }
         }else{
             Log.i("Error update:", "Current User is null")
