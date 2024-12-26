@@ -1,6 +1,13 @@
 package uk.ac.tees.mad.rd.ui.mainapp
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -73,6 +80,29 @@ fun RequestBloodScreen(
     var bloodGroup by remember { mutableStateOf(bloodGroups[0]) }
     var showBloodGroup by remember { mutableStateOf(false) }
     var contact by remember { mutableStateOf("") }
+
+    //Launching Gallery to select the picture
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {uri: Uri? ->
+        uri?.let {
+
+        }
+    }
+
+
+    //Launcher for asking permission to access the gallery.
+    val galleryPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {isGranted->
+            if (isGranted){
+                galleryLauncher.launch("images/*")
+            }else{
+                Toast.makeText(context, "Gallery Permission Denied", Toast.LENGTH_LONG).show()
+            }
+        }
+    )
+
 
     Column(
         modifier = Modifier
@@ -203,7 +233,15 @@ fun RequestBloodScreen(
                     containerColor = Color.Transparent,
                     contentColor = Color.Black
                 ),
-                onClick = {}
+                onClick = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        galleryLauncher.launch("image/*")
+                    } else {
+                        galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    }
+                }
             ) {
                 Text(
                     text = "Upload a report",
@@ -213,7 +251,7 @@ fun RequestBloodScreen(
             }
 
             Text(
-                text = "No file selected",
+                text = "Add Report",
                 fontSize = 17.sp,
                 fontFamily = poppinsFamily
             )

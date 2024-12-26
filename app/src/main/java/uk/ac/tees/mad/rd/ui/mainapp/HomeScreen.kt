@@ -1,5 +1,7 @@
 package uk.ac.tees.mad.rd.ui.mainapp
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -140,6 +143,9 @@ fun HomeScreen(
 fun BloodRequestDetails(
     request: RequestModel
 ){
+
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .padding(vertical = 10.dp)
@@ -151,39 +157,50 @@ fun BloodRequestDetails(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ){
-            Text(
-                text = "Requested Name",
-                fontSize = 20.sp,
-                fontFamily = poppinsFamily,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = "This is the blood type",
-                fontSize = 16.sp,
-                fontFamily = poppinsFamily
-            )
+            request.name?.let {
+                Text(
+                    text = it,
+                    fontSize = 20.sp,
+                    fontFamily = poppinsFamily,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            request.requiredBlood?.let {
+                Text(
+                    text = it,
+                    fontSize = 16.sp,
+                    fontFamily = poppinsFamily
+                )
+            }
             Row {
                 Text(
                     text = "Contact: ",
                     fontSize = 16.sp,
                     fontFamily = poppinsFamily
                 )
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = 5.dp),
-                    text = "1234567890",
-                    fontSize = 16.sp,
-                    fontFamily = poppinsFamily
-                )
+                request.contact?.let {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp),
+                        text = it,
+                        fontSize = 16.sp,
+                        fontFamily = poppinsFamily
+                    )
+                }
             }
             Button(
                 shape = RoundedCornerShape(15.dp),
-                border = BorderStroke(1.dp, color = Color.DarkGray),
+                border = BorderStroke(1.dp, color = Color.Black),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Color.Black
                 ),
-                onClick = {}
+                onClick = {
+                    val dialIntent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:${request.contact}")
+                    }
+                    context.startActivity(dialIntent)
+                }
             ) {
                 Text(
                     text = "Contact donor!!",
