@@ -74,7 +74,7 @@ fun ProfileScreen(
                     )
                     .padding(1.dp)
                     .clip(CircleShape),
-                model = currentUser?.profilePicture,
+                model = "",
                 contentDescription = "Profile Picture",
                 failure = placeholder(R.drawable.img)
             )

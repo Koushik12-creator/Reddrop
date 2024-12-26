@@ -104,6 +104,4 @@ dependencies {
     //Google Maps API
     implementation("com.google.maps.android:maps-compose:4.3.3")
 
-    //Appwrite dependency
-    implementation("io.appwrite:sdk-for-android:6.0.0")
 }

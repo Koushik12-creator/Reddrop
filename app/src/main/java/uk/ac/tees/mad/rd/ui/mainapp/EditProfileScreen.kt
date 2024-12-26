@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +34,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,17 +97,12 @@ fun EditProfileScreen(
     var showDialog by remember { mutableStateOf(false) }
 
 
-    LaunchedEffect(currentUser){
-        authViewmodel.fetchCurrentUser()
-    }
-
-
     //Launching Gallery to select the picture
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) {uri: Uri? ->
         uri?.let {
-            authViewmodel.updateProfileImage(uri)
+
         }
     }
 
@@ -118,7 +111,7 @@ fun EditProfileScreen(
         contract = ActivityResultContracts.TakePicturePreview()
     ) { bitmap: Bitmap? ->
         bitmap?.let {
-            authViewmodel.updateProfileImage(bitmapToUri(context, bitmap))
+
         }
     }
 
@@ -189,7 +182,7 @@ fun EditProfileScreen(
                 )
                 .padding(1.dp)
                 .clip(CircleShape),
-            model = updatedProfilePictureUrl,
+            model = "",
             contentDescription = "Profile Picture",
             failure = placeholder(R.drawable.img)
         )
