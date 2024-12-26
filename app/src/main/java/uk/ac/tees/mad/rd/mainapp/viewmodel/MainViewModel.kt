@@ -1,7 +1,9 @@
 package uk.ac.tees.mad.rd.mainapp.viewmodel
 
 
+import android.app.Application
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.ac.tees.mad.rd.mainapp.model.RequestModel
 import javax.inject.Inject
+
+import io.appwrite.Client
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -22,6 +26,8 @@ class MainViewModel @Inject constructor(
 
     private val _allRequests = MutableStateFlow<List<RequestModel>>(emptyList())
     val allRequests = _allRequests.asStateFlow()
+
+
 
     init {
         getAllRequests()
